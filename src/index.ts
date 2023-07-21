@@ -5,9 +5,11 @@ import morgan from "morgan";
 import cors from "cors";
 
 import { checkEnvVariables } from "./utils";
+import signUpRouter from "./routes/signup.route";
 
 
 export const app: Express = express();
+
 export const prisma = new PrismaClient();
 
 app.use(morgan("dev"));
@@ -19,6 +21,8 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req: Request, res: Response) => {
     res.send("Server is running... 🏃");
   });
+
+app.use(signUpRouter);
 
 
   const serve = async () => {
