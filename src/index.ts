@@ -6,6 +6,7 @@ import cors from "cors";
 
 import { checkEnvVariables } from "./utils";
 import signUpRouter from "./routes/signup.route";
+import signInRouter from "./routes/signin.route";
 
 
 export const app: Express = express();
@@ -23,6 +24,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 
 app.use(signUpRouter);
+app.use(signInRouter);
 
 
   const serve = async () => {
