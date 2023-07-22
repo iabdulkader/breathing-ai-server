@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { prisma } from ".."
-import { hashPassword } from "../utils";
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcryptjs';
+
+import { hashPassword } from "../utils";
 
 const signUpRouter = Router();
 
@@ -138,5 +140,65 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
         });
     }
 })
+
+
+signUpRouter.put("/password", async (req, res) => {
+    const { email, oldPassword, newPassword } = req.body;
+
+    try {
+        const existingAccount = await prisma.userCredentials.findUnique({
+            where: {
+                email
+            }
+        });
+
+        if(!existingAccount) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Account with email does not exist" 
+            });
+        }
+
+        const isPasswordValid = await bcrypt.compare(oldPassword, existingAccount.password);
+
+        if(!isPasswordValid) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Invalid password" 
+            });
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+
+        const updatedAccount = await prisma.userCredentials.update({
+            where: {
+                email
+            },
+            data: {
+                password: hashedPassword
+            }
+        });
+
+        if(!updatedAccount) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Unable to update password" 
+            });
+        }
+
+        return res.status(201).json({
+            success: true,
+            message: "Password updated successfully",
+            data: updatedAccount
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ 
+            success: false,
+            error: "Something went wrong" 
+        });
+    }
+});
 
 export default signUpRouter;
