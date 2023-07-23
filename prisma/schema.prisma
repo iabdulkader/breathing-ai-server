@@ -28,6 +28,7 @@ model User {
   roles      Role[]
   username   String?
   jobTitle   String?
+  info       Json?
 }
 
 model UserCredentials {
@@ -41,6 +42,6 @@ model Customer {
   firstName  String
   lastName   String?
   email      String    @unique
-  b2b        Boolean   @default(false)
+  b2b        Boolean?  @default(false)
   info       Json?
 }

@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Express, Request, Response } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import morgan from "morgan";
 import cors from "cors";
@@ -7,6 +7,8 @@ import cors from "cors";
 import { checkEnvVariables } from "./utils";
 import signUpRouter from "./routes/signup.route";
 import signInRouter from "./routes/signin.route";
+import customerRouter from "./routes/customer.route";
+import authGuard from "./middlewares/auth";
 
 
 export const app: Express = express();
@@ -20,37 +22,47 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Server is running... 🏃");
-  });
+  res.send("Server is running... 🏃");
+});
 
 app.use(signUpRouter);
 app.use(signInRouter);
 
+app.use(authGuard);
+app.use(customerRouter);
 
-  const serve = async () => {
-    try {
-      checkEnvVariables();
-  
-      console.log("💡 Setting up ORM...");
-  
-      await prisma.$connect();
-  
-      app.listen(process.env.PORT || 4000, () => {
-        console.log(
-          `⚡️ Server is running at http://localhost:${process.env.PORT || 4000}`
-        );
-      });
-    } catch (error: any) {
-      console.log(error?.response?.data || error);
-    }
-  
-    process.on("SIGINT", async () => {
-        console.log("👋 SIGINT received, shutting down gracefully");
 
-        await prisma.$disconnect();
-    
-        process.exit(0);
-      });
-    };
-    
-    serve();
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+
+  res.status(statusCode).json({ error: err.message });
+});
+
+
+const serve = async () => {
+  try {
+    checkEnvVariables();
+
+    console.log("💡 Setting up ORM...");
+
+    await prisma.$connect();
+
+    app.listen(process.env.PORT || 4000, () => {
+      console.log(
+        `⚡️ Server is running at http://localhost:${process.env.PORT || 4000}`
+      );
+    });
+  } catch (error: any) {
+    console.log(error?.response?.data || error);
+  }
+
+  process.on("SIGINT", async () => {
+    console.log("👋 SIGINT received, shutting down gracefully");
+
+    await prisma.$disconnect();
+
+    process.exit(0);
+  });
+};
+
+serve();
