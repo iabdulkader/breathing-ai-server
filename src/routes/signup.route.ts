@@ -288,6 +288,9 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
      *       required:
      *         - seats
      *       properties:
+     *         comaanyName:
+     *           type: string
+     *           description: The name of the company
      *         seats:
      *           type: number
      *           description: The number of seats available for the company
@@ -301,6 +304,7 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
      *           type: string
      *           description: The country of the company
      *       example:
+     *         comaanyName: "Example Company"
      *         seats: 100
      *         website: "https://example.com"
      *         industry: "IT"
@@ -335,6 +339,7 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
      *           email: johndoe@gmail.com
      *           b2b: true
      *           info:
+     *             comaanyName: "Example Company"
      *             seats: 100
      *             website: "https://example.com"
      *             industry: "IT"
@@ -385,7 +390,7 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
 
 
     const { customerId }: { customerId: string } = req.params;
-    const { seats, website, industry, country }: CompanyDetails = req.body;
+    const { seats, website, industry, country, comaanyName }: CompanyDetails = req.body;
 
     try {
         const existingCompany = await prisma.customer.findUnique({
@@ -407,6 +412,7 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
             },
             data: {
                 info: {
+                    comaanyName,
                     seats,
                     website,
                     industry,

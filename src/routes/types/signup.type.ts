@@ -7,6 +7,7 @@ export interface AccountDetails {
 }
 
 export interface CompanyDetails {
+    comaanyName: string,
     seats: string,
     website: string,
     industry: string,

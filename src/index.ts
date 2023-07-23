@@ -11,6 +11,7 @@ import signInRouter from "./routes/signin.route";
 import customerRouter from "./routes/customer.route";
 import authGuard from "./middlewares/auth";
 import { swaggerSpec } from "./utils/swagger";
+import userRouter from "./routes/user.route";
 
 
 export const app: Express = express();
@@ -34,6 +35,7 @@ app.use(signInRouter);
 
 app.use(authGuard);
 app.use(customerRouter);
+app.use(userRouter);
 
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
