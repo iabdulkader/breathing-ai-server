@@ -47,7 +47,11 @@ customerRouter.post("/customer/add-user", async (req: ModifiedRequest, res) => {
 
 
         newUsers.map(async (user) => {
-            await customerService.addUserToCustomer(user, parentCustomerId)
+            const faild = await customerService.addUserToCustomer(user, parentCustomerId);
+
+            if (faild) {
+                existingEmails.push(faild);
+            }
         });
 
 
@@ -56,6 +60,43 @@ customerRouter.post("/customer/add-user", async (req: ModifiedRequest, res) => {
             message: "Users added successfully",
             data: newUsers,
             existingAccounts: existingEmails
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
+});
+
+
+customerRouter.delete("/customer/delete", async (req: ModifiedRequest, res) => {
+    const { customerIds }: { customerIds: string[] } = req.body;
+
+    let failedIds: string[] = [];
+
+    if (!customerIds) {
+        return res.status(400).json({
+            success: false,
+            message: "No customer id provided"
+        });
+    }
+
+    try {
+        customerIds.map(async (customerId) => {
+            const failed = await customerService.deleteUserFromCustomer(customerId);
+
+            if (failed) {
+                failedIds.push(failed);
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Customer deleted successfully",
+            failedIds
         });
 
     } catch (error) {

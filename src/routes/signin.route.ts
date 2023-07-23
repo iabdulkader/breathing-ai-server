@@ -9,7 +9,7 @@ import { prisma } from ".."
 const signInRouter = Router();
 
 signInRouter.post("/login", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password }: { email: string, password: string } = req.body;
 
     try {
 
@@ -19,19 +19,19 @@ signInRouter.post("/login", async (req, res) => {
             }
         });
 
-        if(!existingAccount) {
-            return res.status(400).json({ 
+        if (!existingAccount) {
+            return res.status(400).json({
                 success: false,
-                message: "Account with email does not exist" 
+                message: "Account with email does not exist"
             });
         }
 
         const isPasswordValid = await bcrypt.compare(password, existingAccount.password);
 
-        if(!isPasswordValid) {
-            return res.status(400).json({ 
+        if (!isPasswordValid) {
+            return res.status(400).json({
                 success: false,
-                message: "Wrong password" 
+                message: "Wrong password"
             });
         }
 
@@ -43,7 +43,7 @@ signInRouter.post("/login", async (req, res) => {
             token
         });
 
-        
+
     } catch (error) {
         console.log(error);
 
@@ -51,7 +51,7 @@ signInRouter.post("/login", async (req, res) => {
             success: false,
             message: "Something went wrong"
         });
-        
+
     }
 });
 

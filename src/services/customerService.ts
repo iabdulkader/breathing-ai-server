@@ -5,7 +5,8 @@ import { CustomerToAdd } from "../routes/types/customer.type";
 import { prisma } from "..";
 
 interface CustomerServiceType {
-    addUserToCustomer: (customer: CustomerToAdd, parentUserId: string) => Promise<void>
+    addUserToCustomer: (customer: CustomerToAdd, parentUserId: string) => Promise<void | string>,
+    deleteUserFromCustomer: (userId: string) => Promise<void | string>
 }
 
 
@@ -40,7 +41,26 @@ const customerService: CustomerServiceType = {
             });
         } catch (error) {
             console.log(error);
-            throw new Error("Something went wrong");
+
+            return customer.email;
+        }
+    },
+    deleteUserFromCustomer: async (userId: string) => {
+        try {
+            await prisma.userCredentials.delete({
+                where: {
+                    userId
+                }
+            });
+
+            await prisma.user.delete({
+                where: {
+                    id: userId
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            return userId
         }
     }
 };

@@ -4,11 +4,12 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 
 import { hashPassword } from "../utils";
+import { AccountDetails, CompanyDetails } from "./types/signup.type";
 
 const signUpRouter = Router();
 
 signUpRouter.post("/account-details", async (req, res) => {
-    const { firstName, lastName, email, password, jobTitle } = req.body;
+    const { firstName, lastName, email, password, jobTitle }: AccountDetails = req.body;
 
     try {
 
@@ -22,10 +23,10 @@ signUpRouter.post("/account-details", async (req, res) => {
             }
         });
 
-        if(existingAccount) {
-            return res.status(400).json({ 
+        if (existingAccount) {
+            return res.status(400).json({
                 success: false,
-                message: "Account with email already exists" 
+                message: "Account with email already exists"
             });
         }
 
@@ -63,10 +64,10 @@ signUpRouter.post("/account-details", async (req, res) => {
             }
         });
 
-        if(!user || !userCredentials || !customer) {
-            return res.status(400).json({ 
+        if (!user || !userCredentials || !customer) {
+            return res.status(400).json({
                 success: false,
-                message: "Unable to create user" 
+                message: "Unable to create user"
             });
         }
 
@@ -80,17 +81,17 @@ signUpRouter.post("/account-details", async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ 
+        return res.status(500).json({
             success: false,
-            message: "Something went wrong" 
+            message: "Something went wrong"
         });
     }
 })
 
 
 signUpRouter.post("/company-details/:customerId", async (req, res) => {
-    const { customerId } = req.params;
-    const { seats, website, industry, country } = req.body;
+    const { customerId }: { customerId: string } = req.params;
+    const { seats, website, industry, country }: CompanyDetails = req.body;
 
     try {
         const existingCompany = await prisma.customer.findUnique({
@@ -99,10 +100,10 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
             }
         })
 
-        if(!existingCompany) {
-            return res.status(400).json({ 
+        if (!existingCompany) {
+            return res.status(400).json({
                 success: false,
-                message: "Company does not exist" 
+                message: "Company does not exist"
             });
         }
 
@@ -115,15 +116,15 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
                     seats,
                     website,
                     industry,
-                    country, 
+                    country,
                 }
             }
         });
 
-        if(!company) {
-            return res.status(400).json({ 
+        if (!company) {
+            return res.status(400).json({
                 success: false,
-                message: "Unable to update company" 
+                message: "Unable to update company"
             });
         }
 
@@ -134,16 +135,16 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ 
+        return res.status(500).json({
             success: false,
-            message: "Something went wrong" 
+            message: "Something went wrong"
         });
     }
 })
 
 
 signUpRouter.put("/password", async (req, res) => {
-    const { email, oldPassword, newPassword } = req.body;
+    const { email, oldPassword, newPassword }: { email: string, oldPassword: string, newPassword: string } = req.body;
 
     try {
         const existingAccount = await prisma.userCredentials.findUnique({
@@ -152,19 +153,19 @@ signUpRouter.put("/password", async (req, res) => {
             }
         });
 
-        if(!existingAccount) {
-            return res.status(400).json({ 
+        if (!existingAccount) {
+            return res.status(400).json({
                 success: false,
-                message: "Account with email does not exist" 
+                message: "Account with email does not exist"
             });
         }
 
         const isPasswordValid = await bcrypt.compare(oldPassword, existingAccount.password);
 
-        if(!isPasswordValid) {
-            return res.status(400).json({ 
+        if (!isPasswordValid) {
+            return res.status(400).json({
                 success: false,
-                message: "Invalid password" 
+                message: "Invalid password"
             });
         }
 
@@ -179,10 +180,10 @@ signUpRouter.put("/password", async (req, res) => {
             }
         });
 
-        if(!updatedAccount) {
-            return res.status(400).json({ 
+        if (!updatedAccount) {
+            return res.status(400).json({
                 success: false,
-                message: "Unable to update password" 
+                message: "Unable to update password"
             });
         }
 
@@ -194,9 +195,9 @@ signUpRouter.put("/password", async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ 
+        return res.status(500).json({
             success: false,
-            message: "Something went wrong" 
+            message: "Something went wrong"
         });
     }
 });
