@@ -1,12 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 
-import { CustomerToAdd } from "../routes/types/customer.type";
+import { CustomerToAdd, CustomerWithId } from "../routes/types/customer.type";
 import { prisma } from "..";
 
 interface CustomerServiceType {
     addUserToCustomer: (customer: CustomerToAdd, parentUserId: string) => Promise<void | string>,
-    deleteUserFromCustomer: (userId: string) => Promise<void | string>
+    deleteUserFromCustomer: (userId: string) => Promise<void | string>,
+    editUserFromCustomer: (customer: CustomerWithId) => Promise<void | string>
 }
 
 
@@ -61,6 +62,38 @@ const customerService: CustomerServiceType = {
         } catch (error) {
             console.log(error);
             return userId
+        }
+    },
+    editUserFromCustomer: async (customer: CustomerWithId) => {
+        const userId = customer.id;
+
+        try {
+
+            await prisma.user.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    firstName: customer.firstName,
+                    lastName: customer.lastName,
+                    email: customer.email,
+                    info: {
+                        department: customer.department
+                    }
+                }
+            });
+
+            await prisma.userCredentials.update({
+                where: {
+                    userId
+                },
+                data: {
+                    email: customer.email
+                }
+            });
+
+        } catch (error) {
+            return userId;
         }
     }
 };

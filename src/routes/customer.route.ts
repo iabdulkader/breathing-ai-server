@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { prisma } from "..";
 import { ModifiedRequest } from "../middlewares/types";
-import { CustomerToAdd } from "./types/customer.type";
+import { CustomerToAdd, CustomerWithId } from "./types/customer.type";
 import customerService from "../services/customerService";
 
 const customerRouter = Router();
@@ -71,8 +71,49 @@ customerRouter.post("/customer/add-user", async (req: ModifiedRequest, res) => {
     }
 });
 
+customerRouter.put("/customer/update-user", async (req: ModifiedRequest, res) => {
+    const { users }: { ids: string[], users: CustomerWithId[] } = req.body;
 
-customerRouter.delete("/customer/delete", async (req: ModifiedRequest, res) => {
+    let failedIds: string[] = [];
+
+
+    if (!users || users.length === 0) {
+        return res.status(400).json({
+            success: false,
+            message: "No users provided"
+        });
+    }
+
+
+    try {
+        users.map(async (user) => {
+            const failed = await customerService.editUserFromCustomer(user);
+
+            if (failed) {
+                failedIds.push(failed);
+            }
+        });
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Users updated successfully",
+            failedIds
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
+
+
+});
+
+customerRouter.post("/customer/delete", async (req: ModifiedRequest, res) => {
     const { customerIds }: { customerIds: string[] } = req.body;
 
     let failedIds: string[] = [];

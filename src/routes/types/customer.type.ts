@@ -4,3 +4,8 @@ export interface CustomerToAdd {
     email: string;
     department: string;
 }
+
+
+export interface CustomerWithId extends CustomerToAdd {
+    id: string;
+}
