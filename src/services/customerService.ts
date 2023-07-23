@@ -5,14 +5,14 @@ import { CustomerToAdd, CustomerWithId } from "../routes/types/customer.type";
 import { prisma } from "..";
 
 interface CustomerServiceType {
-    addUserToCustomer: (customer: CustomerToAdd, parentUserId: string) => Promise<void | string>,
+    addUserToCustomer: (customer: CustomerToAdd, parentCustomerId: string) => Promise<void | string>,
     deleteUserFromCustomer: (userId: string) => Promise<void | string>,
     editUserFromCustomer: (customer: CustomerWithId) => Promise<void | string>
 }
 
 
 const customerService: CustomerServiceType = {
-    addUserToCustomer: async (customer: CustomerToAdd, parentUserId: string) => {
+    addUserToCustomer: async (customer: CustomerToAdd, parentCustomerId: string) => {
         const userId = uuidv4();
 
         try {
@@ -22,7 +22,7 @@ const customerService: CustomerServiceType = {
                     firstName: customer.firstName,
                     lastName: customer.lastName,
                     email: customer.email,
-                    customerId: parentUserId,
+                    customerId: parentCustomerId,
                     username: customer.email,
                     roles: ["USER"],
                     info: {

@@ -6,16 +6,16 @@ import { DecodedToken, ModifiedRequest } from "./types";
 
 
 const authGuard = (req: ModifiedRequest, res: Response, next: NextFunction) => {
-    if(!req.headers.authorization){
+    if (!req.headers.authorization) {
         return res.status(401).json({
             success: false,
             message: "Unauthorized"
         });
     }
-    
+
     const token = req.headers.authorization.split(" ")[1];
 
-    if(!token) {
+    if (!token) {
         return res.status(401).json({
             success: false,
             message: "Unauthorized"
@@ -24,7 +24,7 @@ const authGuard = (req: ModifiedRequest, res: Response, next: NextFunction) => {
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken;
 
-    if(!decodedToken) {
+    if (!decodedToken) {
         return res.status(401).json({
             success: false,
             message: "Unauthorized"
@@ -33,7 +33,8 @@ const authGuard = (req: ModifiedRequest, res: Response, next: NextFunction) => {
 
     console.log(decodedToken);
 
-    req.userId = decodedToken.customerId;
+    req.userId = decodedToken.userId;
+    req.customerId = decodedToken.customerId;
 
     next();
 }
