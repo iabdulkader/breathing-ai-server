@@ -7,6 +7,133 @@ import customerService from "../services/customerService";
 
 const customerRouter = Router();
 
+customerRouter.get("/customer/users", async (req: ModifiedRequest, res) => {
+
+    /**
+ * @swagger
+ * components:
+ *   schemas:
+ *     AuthGuard:
+ *       type: object
+ *       properties:
+ *         Authorization:
+ *           type: string
+ *           description: The Bearer token for authentication
+ *       example:
+ *         Authorization: "Bearer your_access_token_here"
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Indicates if the request was successful or not
+ *         message:
+ *           type: string
+ *           description: The error message
+ *       example:
+ *         success: false
+ *         message: "Something went wrong"
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The ID of the user
+ *         firstName:
+ *           type: string
+ *           description: The first name of the user
+ *         lastName:
+ *           type: string
+ *           description: The last name of the user
+ *         email:
+ *           type: string
+ *           description: The email of the user
+ *       example:
+ *         id: "a1b2c3d4e5f6"
+ *         firstName: John
+ *         lastName: Doe
+ *         email: johndoe@example.com
+ *     GetUsersResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Indicates if the request was successful or not
+ *         data:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/User'
+ *           description: The array of users associated with the customer
+ *       example:
+ *         success: true
+ *         data:
+ *           - id: "a1b2c3d4e5f6"
+ *             firstName: John
+ *             lastName: Doe
+ *             email: johndoe@example.com
+ *           - id: "x1y2z3w4v5u6"
+ *             firstName: Jane
+ *             lastName: Smith
+ *             email: janesmith@example.com
+ */
+
+    /**
+     * @swagger
+     * /customer/users:
+     *   get:
+     *     summary: Get users associated with a customer
+     *     tags:
+     *       - Customer
+     *     security:
+     *       - BearerAuth: []
+     *     responses:
+     *       '200':
+     *         description: Users retrieved successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/GetUsersResponse'
+     *       '401':
+     *         description: Unauthorized
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/ErrorResponse'
+     *       '500':
+     *         description: Internal Server Error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/ErrorResponse'
+     */
+
+
+
+    const customerId = req.customerId;
+
+    try {
+
+        const users = await prisma.user.findMany({
+            where: {
+                customerId
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: users
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
+});
+
 customerRouter.post("/customer/add-user", async (req: ModifiedRequest, res) => {
 
     /**
