@@ -29,6 +29,11 @@ model User {
   username   String?
   jobTitle   String?
   info       Json?
+  createdOn  DateTime?  @default(now())
+  modifiedOn DateTime?  @updatedAt
+  emailVerified Boolean? @default(false)
+  verificationToken String?
+  deviceIds  String[]?
 }
 
 model UserCredentials {

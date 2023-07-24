@@ -109,5 +109,104 @@ userRouter.put('/user/details/name', async (req: ModifiedRequest, res) => {
 
 });
 
+userRouter.get("/me", async (req: ModifiedRequest, res) => {
+    /**
+ * @swagger
+ * /me:
+ *   get:
+ *     summary: Get current user's profile
+ *     description: Retrieve the profile of the currently authenticated user.
+ *     tags:
+ *       - User
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful operation. Returns user data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful.
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   description: A message describing the result of the operation.
+ *                   example: User found
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: A message describing the error.
+ *                   example: User not found
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: A message describing the error.
+ *                   example: Internal Server Error
+ *     securitySchemes:
+ *       BearerAuth:
+ *         type: http
+ *         scheme: bearer
+ *         bearerFormat: JWT
+ */
+
+
+    const userId = req.userId;
+
+    try {
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'User found',
+            data: user
+        });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: (err as Error).message
+        });
+    }
+});
+
 
 export default userRouter;
