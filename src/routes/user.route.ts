@@ -11,7 +11,7 @@ userRouter.put('/user/details/name', async (req: ModifiedRequest, res) => {
      * @swagger
      * components:
      *   securitySchemes:
-     *     bearerAuth:
+     *     BearerAuth:
      *       type: http
      *       scheme: bearer
      *       bearerFormat: JWT
@@ -21,7 +21,7 @@ userRouter.put('/user/details/name', async (req: ModifiedRequest, res) => {
      *     summary: Update user details (first name and last name)
      *     tags: [User]
      *     security:
-     *       - bearerAuth: []
+     *       - BearerAuth: []
      *     requestBody:
      *       required: true
      *       content:
