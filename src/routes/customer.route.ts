@@ -7,6 +7,106 @@ import customerService from "../services/customerService";
 
 const customerRouter = Router();
 
+customerRouter.get("/customer", async (req: ModifiedRequest, res) => {
+    /**
+ * @swagger
+ * /customer:
+ *   get:
+ *     summary: Get customer profile
+ *     description: Retrieve the profile of a customer.
+ *     tags:
+ *       - Customer
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful operation. Returns customer data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful.
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   description: A message describing the result of the operation.
+ *                   example: Customer retrieved successfully
+ *                 data:
+ *                   $ref: '#/components/schemas/Customer'
+ *       404:
+ *         description: Customer not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: A message describing the error.
+ *                   example: Customer not found
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the operation was successful.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: A message describing the error.
+ *                   example: Something went wrong
+ *     securitySchemes:
+ *       BearerAuth:
+ *         type: http
+ *         scheme: bearer
+ *         bearerFormat: JWT
+ */
+
+
+    const customerId = req.customerId;
+
+    try {
+
+        const customer = await prisma.customer.findUnique({
+            where: {
+                id: customerId
+            }
+        });
+
+        if (!customer) {
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Customer retrieved successfully",
+            data: customer
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
+
+});
+
 customerRouter.get("/customer/users", async (req: ModifiedRequest, res) => {
 
     /**
@@ -638,5 +738,6 @@ customerRouter.post("/customer/delete", async (req: ModifiedRequest, res) => {
         });
     }
 });
+
 
 export default customerRouter;

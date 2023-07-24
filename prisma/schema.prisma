@@ -18,35 +18,44 @@ enum Role {
   FEED
 }
 
-
 model User {
-  id         String    @id @default(uuid())
-  firstName  String
-  lastName   String?
-  email      String    @unique
-  customerId String?
-  roles      Role[]
-  username   String?
-  jobTitle   String?
-  info       Json?
-  createdOn  DateTime?  @default(now())
-  modifiedOn DateTime?  @updatedAt
-  emailVerified Boolean? @default(false)
+  id                String    @id @default(uuid())
+  firstName         String
+  lastName          String?
+  email             String    @unique
+  customerId        String?
+  roles             Role[]
+  username          String?
+  jobTitle          String?
+  info              Json?
+  createdOn         DateTime? @default(now())
+  modifiedOn        DateTime? @updatedAt
+  emailVerified     Boolean?  @default(false)
   verificationToken String?
-  deviceIds  String[]
+  deviceIds         String[]
 }
 
 model UserCredentials {
-  email      String    @unique
-  password   String
-  userId     String   @unique
+  email    String @unique
+  password String
+  userId   String @unique
 }
 
 model Customer {
-  id         String    @id @default(uuid())
-  firstName  String
-  lastName   String?
-  email      String    @unique
-  b2b        Boolean?  @default(false)
-  info       Json?
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String?
+  email     String   @unique
+  b2b       Boolean? @default(false)
+  info      Json?
+
+  createdOn  DateTime? @default(now())
+  modifiedOn DateTime? @updatedAt
+
+  companyName String?
+  phoneNumber String?
+  language    String?
+
+  stripeCustomer String?
+  billingAddress Json?
 }
