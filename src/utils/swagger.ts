@@ -20,6 +20,10 @@ const swaggerDefinition = {
             url: 'http://localhost:4000',
             description: 'Development server'
         },
+        {
+            url: 'https://breathing-ai-server-production.up.railway.app',
+            description: 'Production server'
+        }
     ],
     apis: ['./src/routes/*.ts', './src/routes/**/*.js'],
 };
