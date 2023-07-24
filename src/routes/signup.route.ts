@@ -519,7 +519,7 @@ signUpRouter.put("/password", authGuard, async (req, res) => {
      *     tags:
      *       - Authentication
      *     security:
-     *       - AuthGuard: []
+     *       - BearerAuth: []
      *     requestBody:
      *       required: true
      *       content:
