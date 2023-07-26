@@ -1,0 +1,58 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Customer API
+  description: API for managing customers
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier for the customer.
+        firstName:
+          type: string
+          description: The first name of the customer.
+        lastName:
+          type: string
+          description: The last name of the customer (optional).
+        email:
+          type: string
+          format: email
+          description: The unique email address of the customer.
+        b2b:
+          type: boolean
+          description: A flag indicating whether the customer is a business-to-business customer (optional).
+        info:
+          type: object
+          description: Additional information about the customer in JSON format (optional).
+        createdOn:
+          type: string
+          format: date-time
+          description: The date and time when the customer record was created (optional).
+        modifiedOn:
+          type: string
+          format: date-time
+          description: The date and time when the customer record was last updated (optional).
+        companyName:
+          type: string
+          description: The name of the customer's company (optional).
+        phoneNumber:
+          type: string
+          description: The customer's phone number (optional).
+        language:
+          type: string
+          description: The preferred language of the customer (optional).
+        stripeCustomer:
+          type: string
+          description: The identifier of the customer in the Stripe payment system (optional).
+        billingAddress:
+          type: object
+          description: The customer's billing address in JSON format (optional).
+
+      required:
+        - firstName
+        - email

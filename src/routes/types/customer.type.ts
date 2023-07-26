@@ -8,4 +8,5 @@ export interface CustomerToAdd {
 
 export interface CustomerWithId extends CustomerToAdd {
     id: string;
+    userId?: string;
 }

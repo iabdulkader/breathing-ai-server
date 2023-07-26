@@ -5,7 +5,7 @@ import { ModifiedRequest } from '../middlewares/types';
 
 const userRouter = Router();
 
-userRouter.put('/user/details/name', async (req: ModifiedRequest, res) => {
+userRouter.put('/account-details', async (req: ModifiedRequest, res) => {
 
     /**
      * @swagger
@@ -80,8 +80,16 @@ userRouter.put('/user/details/name', async (req: ModifiedRequest, res) => {
 
 
     const userId = req.userId;
+    const customerId = req.customerId;
 
-    const { firstName, lastName }: { firstName: string, lastName: string } = req.body;
+    const { firstName, lastName, companyName, phone, language }:
+        {
+            firstName: string,
+            lastName: string,
+            companyName: string,
+            phone: string,
+            language: string
+        } = req.body;
 
     try {
         const user = await prisma.user.update({
@@ -90,14 +98,46 @@ userRouter.put('/user/details/name', async (req: ModifiedRequest, res) => {
             },
             data: {
                 firstName,
-                lastName
+                lastName,
+
             }
         });
+
+        const existingCustomer = await prisma.customer.findUnique({
+            where: {
+                id: customerId
+            }
+        });
+
+        const customer = await prisma.customer.update({
+            where: {
+                id: customerId
+            },
+            data: {
+                firstName,
+                lastName,
+                companyName,
+                language,
+                info: {
+                    ...existingCustomer?.info as any,
+                    phone
+                }
+            }
+        });
+
 
         res.status(200).json({
             success: true,
             message: 'User details updated successfully',
-            data: user
+            data: {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                companyName: customer.companyName,
+                // @ts-ignore
+                phone: customer?.info?.phone,
+                language: customer.language
+            }
         });
     }
     catch (err) {

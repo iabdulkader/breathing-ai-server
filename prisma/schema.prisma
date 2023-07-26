@@ -53,7 +53,6 @@ model Customer {
   modifiedOn DateTime? @updatedAt
 
   companyName String?
-  phoneNumber String?
   language    String?
 
   stripeCustomer String?

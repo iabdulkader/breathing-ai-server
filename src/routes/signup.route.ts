@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { hashPassword } from "../utils";
 import { AccountDetails, CompanyDetails } from "./types/signup.type";
 import authGuard from "../middlewares/auth";
+import { ModifiedRequest } from "../middlewares/types";
 
 const signUpRouter = Router();
 
@@ -443,7 +444,7 @@ signUpRouter.post("/company-details/:customerId", async (req, res) => {
 })
 
 
-signUpRouter.put("/password", authGuard, async (req, res) => {
+signUpRouter.put("/password", authGuard, async (req: ModifiedRequest, res) => {
     /**
  * @swagger
  * components:
@@ -554,12 +555,14 @@ signUpRouter.put("/password", authGuard, async (req, res) => {
      */
 
 
-    const { email, oldPassword, newPassword }: { email: string, oldPassword: string, newPassword: string } = req.body;
+    const { oldPassword, newPassword }: { email: string, oldPassword: string, newPassword: string } = req.body;
+
+    const userId = req.userId;
 
     try {
         const existingAccount = await prisma.userCredentials.findUnique({
             where: {
-                email
+                userId
             }
         });
 
@@ -583,7 +586,7 @@ signUpRouter.put("/password", authGuard, async (req, res) => {
 
         const updatedAccount = await prisma.userCredentials.update({
             where: {
-                email
+                userId
             },
             data: {
                 password: hashedPassword

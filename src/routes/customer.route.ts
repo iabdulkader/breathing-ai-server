@@ -234,7 +234,7 @@ customerRouter.get("/customer/users", async (req: ModifiedRequest, res) => {
     }
 });
 
-customerRouter.post("/customer/add-user", async (req: ModifiedRequest, res) => {
+customerRouter.post("/customer/add-users", async (req: ModifiedRequest, res) => {
 
     /**
      * @swagger
@@ -318,7 +318,7 @@ customerRouter.post("/customer/add-user", async (req: ModifiedRequest, res) => {
 
     /**
      * @swagger
-     * /customer/add-user:
+     * /customer/add-users:
      *   post:
      *     summary: Add users to a customer
      *     tags:
@@ -571,7 +571,9 @@ customerRouter.put("/customer/update-user", async (req: ModifiedRequest, res) =>
      */
 
 
-    const { users }: { ids: string[], users: CustomerWithId[] } = req.body;
+    const { users }: { users: CustomerWithId[] } = req.body;
+
+    console.log(users);
 
     let failedIds: string[] = [];
 

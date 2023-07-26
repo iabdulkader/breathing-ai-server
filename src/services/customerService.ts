@@ -67,6 +67,8 @@ const customerService: CustomerServiceType = {
     editUserFromCustomer: async (customer: CustomerWithId) => {
         const userId = customer.id;
 
+        console.log(customer);
+
         try {
 
             await prisma.user.update({
