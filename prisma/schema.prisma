@@ -62,8 +62,9 @@ model Customer {
 }
 
 model Subscription {
-  id             String @id @default(uuid())
-  customerId     String
-  subscriptionId String
-  quantity       Int
+  id               String @id @default(uuid())
+  customerId       String
+  stripeCustomerId String
+  subscriptionId   String
+  quantity         Int
 }

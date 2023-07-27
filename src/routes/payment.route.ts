@@ -57,8 +57,8 @@ paymentRouter.post("/stripe-webhook",
 
                 await prisma.subscription.create({
                     data: {
-                        id: subscription.client_reference_id,
-                        customerId: subscription.customer,
+                        customerId: subscription.client_reference_id,
+                        stripeCustomerId: subscription.customer,
                         subscriptionId: subscription.subscription,
                         quantity: Number(subscription.metadata.quantity),
                     }
@@ -70,6 +70,7 @@ paymentRouter.post("/stripe-webhook",
                     },
                     select: {
                         quantity: true,
+                        info: true,
                     },
                 });
 
@@ -82,6 +83,10 @@ paymentRouter.post("/stripe-webhook",
                     },
                     data: {
                         quantity: Number(newQuantity),
+                        info: {
+                            ...(customer as any)?.info,
+                            seats: Number(newQuantity),
+                        }
                     },
                 });
 
@@ -115,6 +120,7 @@ paymentRouter.post("/stripe-webhook",
                         },
                         select: {
                             quantity: true,
+                            info: true,
                         },
                     });
 
@@ -126,7 +132,11 @@ paymentRouter.post("/stripe-webhook",
                             id: subscription.client_reference_id,
                         },
                         data: {
-                            quantity: newQuantity,
+                            quantity: Number(newQuantity),
+                            info: {
+                                ...(customer as any)?.info,
+                                seats: Number(newQuantity),
+                            }
                         },
                     });
                 } catch (error) {
