@@ -55,6 +55,15 @@ model Customer {
   companyName String?
   language    String?
 
-  stripeCustomer String?
+  stripeCustomer String[]
+  subscriptionId String[]
+  quantity       Int?
   billingAddress Json?
+}
+
+model Subscription {
+  id             String @id @default(uuid())
+  customerId     String
+  subscriptionId String
+  quantity       Int
 }

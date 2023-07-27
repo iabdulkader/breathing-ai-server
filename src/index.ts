@@ -12,6 +12,7 @@ import customerRouter from "./routes/customer.route";
 import authGuard from "./middlewares/auth";
 import { swaggerSpec } from "./utils/swagger";
 import userRouter from "./routes/user.route";
+import paymentRouter from "./routes/payment.route";
 
 
 export const app: Express = express();
@@ -20,6 +21,8 @@ export const prisma = new PrismaClient();
 
 app.use(morgan("dev"));
 app.use(cors());
+
+app.use(paymentRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
