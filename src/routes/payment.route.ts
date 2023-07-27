@@ -28,7 +28,7 @@ paymentRouter.post('/create-subscription', async (req, res) => {
         ],
         mode: "subscription",
         success_url: `${req.headers.origin}/success`,
-        cancel_url: `${req.headers.origin}/checkout`,
+        cancel_url: `${req.headers.origin}/app/signup`,
         client_reference_id: id as string,
         metadata: {
             quantity: Number(quantity),
