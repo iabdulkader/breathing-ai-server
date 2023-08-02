@@ -55,8 +55,8 @@ model Customer {
   companyName String?
   language    String?
 
-  stripeCustomer String[]
-  subscriptionId String[]
+  stripeCustomerId String?
+  subscriptionId String?
   quantity       Int?
   billingAddress Json?
 }

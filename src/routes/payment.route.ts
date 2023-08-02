@@ -39,6 +39,72 @@ paymentRouter.post('/create-subscription', async (req, res) => {
     return res.json({ id: session.id });
 });
 
+paymentRouter.post("/update-subscription", express.json(), express.urlencoded({ extended: false }), async (req, res) => {
+    const { id, quantity }: {
+        id: string;
+        quantity: string;
+    } = req.body;
+
+
+    try {
+        const existingSubscription = await stripe.subscriptions.retrieve(id);
+
+        if (!existingSubscription) return res.status(404).json({ success: false, message: 'Subscription not found' })
+
+        await stripe.subscriptions.update(
+            id,
+            {
+                items: [
+                    {
+                        id: existingSubscription.items.data[0].id,
+                        quantity: Number(quantity),
+                    },
+                ],
+            }
+        );
+
+
+
+        await prisma.subscription.updateMany({
+            where: {
+                subscriptionId: id,
+            },
+            data: {
+                quantity: Number(quantity),
+            },
+        });
+
+        const customer = await prisma.customer.findMany({
+            where: {
+                subscriptionId: id,
+            },
+            select: {
+                quantity: true,
+                info: true,
+            },
+        });
+
+
+        await prisma.customer.updateMany({
+            where: {
+                subscriptionId: id,
+            },
+            data: {
+                info: {
+                    ...(customer as any)?.info,
+                    quantity: Number(quantity),
+                }
+            }
+        })
+
+        return res.status(200).json({ success: true, message: 'Subscription updated successfully' });
+    } catch (error) {
+        console.error('Error updating subscription quantity:', error);
+        return res.status(500).json({ error: 'An error occurred while updating subscription quantity' });
+    }
+
+});
+
 paymentRouter.post("/stripe-webhook",
     express.raw({ type: "application/json" }),
     async (req, res) => {
@@ -64,6 +130,7 @@ paymentRouter.post("/stripe-webhook",
                     }
                 })
 
+
                 const customer = await prisma.customer.findUnique({
                     where: {
                         id: subscription.client_reference_id,
@@ -86,7 +153,9 @@ paymentRouter.post("/stripe-webhook",
                         info: {
                             ...(customer as any)?.info,
                             seats: Number(newQuantity),
-                        }
+                        },
+                        stripeCustomerId: subscription.customer,
+                        subscriptionId: subscription.subscription,
                     },
                 });
 
@@ -96,7 +165,7 @@ paymentRouter.post("/stripe-webhook",
                 const charge = stripeEvent.data.object as any;
 
                 try {
-                    // console.log(charge); =
+
                 } catch (error) {
                     console.log(error);
                 }
