@@ -47,19 +47,34 @@ paymentRouter.post("/update-subscription", express.json(), express.urlencoded({ 
 
 
     try {
+        // const existingSubscription = await stripe.subscriptions.retrieve(id);
+
+        // if (!existingSubscription) return res.status(404).json({ success: false, message: 'Subscription not found' })
+
+        // await stripe.subscriptions.update(
+        //     id,
+        //     {
+        //         items: [
+        //             {
+        //                 id: existingSubscription.items.data[0].id,
+        //                 quantity: Number(quantity),
+        //             },
+        //         ],
+        //     }
+        // );
+
         const existingSubscription = await stripe.subscriptions.retrieve(id);
 
-        if (!existingSubscription) return res.status(404).json({ success: false, message: 'Subscription not found' })
+        if (!existingSubscription) return res.status(404).json({ success: false, message: 'Subscription not found' });
 
-        await stripe.subscriptions.update(
-            id,
+
+        let finalQuantity = (existingSubscription.items.data[0]?.quantity ?? 0) + Number(quantity);
+
+
+        await stripe.subscriptionItems.update(
+            existingSubscription.items.data[0].id,
             {
-                items: [
-                    {
-                        id: existingSubscription.items.data[0].id,
-                        quantity: Number(quantity),
-                    },
-                ],
+                quantity: Number(finalQuantity),
             }
         );
 
@@ -70,7 +85,7 @@ paymentRouter.post("/update-subscription", express.json(), express.urlencoded({ 
                 subscriptionId: id,
             },
             data: {
-                quantity: Number(quantity),
+                quantity: Number(finalQuantity),
             },
         });
 
@@ -92,7 +107,7 @@ paymentRouter.post("/update-subscription", express.json(), express.urlencoded({ 
             data: {
                 info: {
                     ...(customer as any)?.info,
-                    quantity: Number(quantity),
+                    seats: Number(finalQuantity),
                 }
             }
         })
