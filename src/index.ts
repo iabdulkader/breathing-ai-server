@@ -13,6 +13,7 @@ import authGuard from "./middlewares/auth";
 import { swaggerSpec } from "./utils/swagger";
 import userRouter from "./routes/user.route";
 import paymentRouter from "./routes/payment.route";
+import bookmarkRoute from "./routes/bookmark.route";
 
 
 export const app: Express = express();
@@ -39,6 +40,7 @@ app.use(signInRouter);
 app.use(authGuard);
 app.use(customerRouter);
 app.use(userRouter);
+app.use(bookmarkRoute);
 
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

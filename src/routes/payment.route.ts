@@ -169,7 +169,7 @@ paymentRouter.post("/stripe-webhook",
                             ...(customer as any)?.info,
                             seats: Number(newQuantity),
                         },
-                        stripeCustomerId: subscription.customer,
+                        stripeCustomer: subscription.customer,
                         subscriptionId: subscription.subscription,
                     },
                 });

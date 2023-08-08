@@ -24,7 +24,7 @@ const customerService: CustomerServiceType = {
                     email: customer.email,
                     customerId: parentCustomerId,
                     username: customer.email,
-                    roles: ["USER"],
+                    roles: ["user"],
                     info: {
                         department: customer.department
                     }

@@ -10,6 +10,85 @@ import { ModifiedRequest } from "../middlewares/types";
 
 const signUpRouter = Router();
 
+signUpRouter.post("/signup", async (req, res) => {
+    const { email,
+        firstName,
+        lastName,
+        password } = req.body as AccountDetails;
+
+
+    try {
+
+        const hashedPassword = await hashPassword(password);
+
+        const userId = uuidv4();
+
+        const customerId = uuidv4();
+
+        const userData = await prisma.user.create({
+            data: {
+                id: userId,
+                firstName,
+                lastName,
+                email,
+                username: email,
+                roles: ["user"],
+                customerId,
+            }
+        });
+
+        await prisma.userCredentials.create({
+            data: {
+                email,
+                password: hashedPassword,
+                userId
+            }
+        });
+
+        const customer = await prisma.customer.create({
+            data: {
+                id: customerId,
+                firstName,
+                lastName,
+                b2b: false,
+                email,
+            }
+        });
+
+
+        return res.status(200).json({
+            status: 200,
+            message: "User created successfully",
+            customer: {
+                createdOn: customer.createdOn,
+                modifiedOn: customer.modifiedOn,
+                id: customer.id,
+                firstName: customer.firstName,
+                lastName: customer.lastName,
+                b2b: customer.b2b,
+            },
+            user: {
+                createdOn: userData.createdOn,
+                modifiedOn: userData.modifiedOn,
+                id: userData.id,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                email: userData.email,
+                username: userData.username,
+                roles: userData.roles,
+                customerId: userData.customerId,
+            }
+        });
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: (error as Error).message
+        });
+    }
+});
+
 signUpRouter.post("/account-details", async (req, res) => {
     /**
  * @swagger
@@ -239,7 +318,7 @@ signUpRouter.post("/account-details", async (req, res) => {
                 lastName,
                 email,
                 customerId: accountId,
-                roles: ["USER", "AGENT"],
+                roles: ["user", "agent"],
                 username: email,
                 jobTitle
             }

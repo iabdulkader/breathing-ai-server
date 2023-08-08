@@ -3,7 +3,7 @@ export interface AccountDetails {
     lastName: string,
     email: string,
     password: string,
-    jobTitle: string
+    jobTitle?: string
 }
 
 export interface CompanyDetails {
