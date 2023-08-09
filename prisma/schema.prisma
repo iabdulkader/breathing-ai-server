@@ -33,8 +33,6 @@ model User {
   emailVerified     Boolean?  @default(false)
   verificationToken String?
   deviceIds         String[]
-
-
 }
 
 model UserCredentials {
@@ -44,13 +42,13 @@ model UserCredentials {
 }
 
 model Customer {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String?
-  email     String   @unique
+  id          String   @id @default(uuid())
+  firstName   String
+  lastName    String?
+  email       String   @unique
   phoneNumber String?
-  b2b       Boolean? @default(false)
-  info      Json?
+  b2b         Boolean? @default(false)
+  info        Json?
 
   createdOn  DateTime? @default(now())
   modifiedOn DateTime? @updatedAt
@@ -73,9 +71,58 @@ model Subscription {
 }
 
 model Bookmarks {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  contentIds    String[]
-  createdOn DateTime @default(now())
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  contentIds String[]
+  createdOn  DateTime @default(now())
   modifiedOn DateTime @updatedAt
+}
+
+// Extension
+model ExtensionSettings {
+  id     String         @id @default(uuid())
+  userId String         @unique
+  app    AppSettings?
+  breaks BreakSettings?
+  colors ColorsSetting?
+  sounds soundSettings?
+}
+
+model AppSettings {
+  id         Int     @id @default(autoincrement())
+  paused     Boolean
+  language   String
+  activeTime Json?
+  theme      String?
+
+  user   ExtensionSettings @relation(fields: [userId], references: [id])
+  userId String            @unique
+}
+
+model BreakSettings {
+  id        Int     @id @default(autoincrement())
+  enabled   Boolean
+  alert     Boolean
+  frequency Int
+
+  user   ExtensionSettings @relation(fields: [userId], references: [id])
+  userId String            @unique
+}
+
+model ColorsSetting {
+  id            Int     @id @default(autoincrement())
+  enabled       Boolean
+  opacity       String
+  selectedColor String
+
+  user   ExtensionSettings @relation(fields: [userId], references: [id])
+  userId String            @unique
+}
+
+model soundSettings {
+  id      Int     @id @default(autoincrement())
+  enabled Boolean
+
+  user   ExtensionSettings @relation(fields: [userId], references: [id])
+  userId String            @unique
 }

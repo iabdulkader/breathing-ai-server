@@ -14,6 +14,7 @@ import { swaggerSpec } from "./utils/swagger";
 import userRouter from "./routes/user.route";
 import paymentRouter from "./routes/payment.route";
 import bookmarkRoute from "./routes/bookmark.route";
+import browserExtention from "./routes/browser";
 
 
 export const app: Express = express();
@@ -38,9 +39,11 @@ app.use(signUpRouter);
 app.use(signInRouter);
 
 app.use(authGuard);
+
 app.use(customerRouter);
 app.use(userRouter);
 app.use(bookmarkRoute);
+app.use("/browser-extension", browserExtention);
 
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

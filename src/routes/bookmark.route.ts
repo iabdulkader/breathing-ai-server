@@ -28,7 +28,7 @@ bookmarkRoute.get('/user/bookmarks', async (req: ModifiedRequest, res) => {
     }
 });
 
-bookmarkRoute.post('/user/bookmarks', async (req: ModifiedRequest, res) => {
+bookmarkRoute.put('/user/bookmarks', async (req: ModifiedRequest, res) => {
     const { bookmarks } = req.body;
     const userId = req.userId;
 
