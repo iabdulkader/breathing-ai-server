@@ -5,9 +5,9 @@ import { ModifiedRequest } from '../../middlewares/types';
 import { ColorsSetting } from '@prisma/client';
 import { getOrCreateInitialSettings } from '../../services/browser-extension/getOrCreateInitialSettings';
 
-const appSetting = Router();
+const colorSettings = Router();
 
-appSetting.put('/colors-settings', async (req: ModifiedRequest, res) => {
+colorSettings.put('/colors-settings', async (req: ModifiedRequest, res) => {
 
     const { setting }: { setting: ColorsSetting } = req.body;
     const userId = req.userId;
@@ -45,7 +45,7 @@ appSetting.put('/colors-settings', async (req: ModifiedRequest, res) => {
 
 });
 
-appSetting.get('/colors-settings', async (req: ModifiedRequest, res) => {
+colorSettings.get('/colors-settings', async (req: ModifiedRequest, res) => {
 
     const userId = req.userId;
 
@@ -71,4 +71,4 @@ appSetting.get('/colors-settings', async (req: ModifiedRequest, res) => {
 });
 
 
-export default appSetting;
+export default colorSettings;
