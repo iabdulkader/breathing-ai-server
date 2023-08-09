@@ -13,12 +13,14 @@ export const getCurrentDate = () => {
 eventRouter.post('/browser-extension/event/break', async (req: ModifiedRequest, res) => {
 
     const userId = req.userId;
+    console.log("asjd", req.body);
     const event: {
         contentUrl: string;
         completed: boolean;
         rating: number;
         lang: string;
-    } = req.body.event;
+    } = req.body;
+
 
     try {
         let userImprovements = await prisma.userImprovement.findFirst({
