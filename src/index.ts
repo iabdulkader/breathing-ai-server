@@ -15,6 +15,9 @@ import userRouter from "./routes/user.route";
 import paymentRouter from "./routes/payment.route";
 import bookmarkRoute from "./routes/bookmark.route";
 import browserExtention from "./routes/browser";
+import screentimeRouter from "./routes/browser/screentime/screentime.route";
+import eventRouter from "./routes/browser/event/event.route";
+import colorsApi from "./routes/browser/color/colors.route";
 
 
 export const app: Express = express();
@@ -44,6 +47,10 @@ app.use(customerRouter);
 app.use(userRouter);
 app.use(bookmarkRoute);
 app.use("/browser-extension", browserExtention);
+app.use(screentimeRouter);
+app.use(eventRouter)
+app.use(colorsApi)
+
 
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

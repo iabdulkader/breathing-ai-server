@@ -126,3 +126,37 @@ model soundSettings {
   user   ExtensionSettings @relation(fields: [userId], references: [id])
   userId String            @unique
 }
+
+// Screentime
+
+model UserScreenTime {
+  id         String @id @default(uuid())
+  date       String
+  userId     String @unique
+  screenTime Json?
+
+  @@unique([date, userId])
+}
+
+model UserImprovement {
+  id          String        @id @default(uuid())
+  userId      String        @unique
+  improvement Improvement[]
+}
+
+model Improvement {
+  id         String   @id @default(uuid())
+  contentIds String[]
+  device     String
+  completed  Boolean
+  rating     Int?
+
+  userImprovement   UserImprovement @relation(fields: [userImprovementId], references: [id])
+  userImprovementId String
+}
+
+model UserColors {
+  id     String   @id @default(uuid())
+  userId String   @unique
+  colors String[]
+}
