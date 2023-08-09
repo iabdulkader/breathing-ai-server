@@ -6,12 +6,18 @@ export async function getOrCreateInitialSettings(userId: string) {
         const extensionSettings = await prisma.extensionSettings.findUnique({
             where: {
                 userId,
+            },
+            include: {
+                app: true,
+                breaks: true,
+                colors: true,
+                sounds: true
             }
         });
 
 
         if (!extensionSettings) {
-            const newExtensionSettings = await prisma.extensionSettings.create({
+            await prisma.extensionSettings.create({
                 data: {
                     userId,
                     app: {
@@ -29,20 +35,20 @@ export async function getOrCreateInitialSettings(userId: string) {
                 }
             });
 
+            return await prisma.extensionSettings.findUnique({
+                where: {
+                    userId,
+                },
+                include: {
+                    app: true,
+                    breaks: true,
+                    colors: true,
+                    sounds: true
+                }
+            });
         }
 
-        return await prisma.extensionSettings.findUnique({
-            where: {
-                userId,
-            },
-            include: {
-                app: true,
-                breaks: true,
-                colors: true,
-                sounds: true
-            }
-        });
-
+        return extensionSettings;
 
     } catch (err) {
         console.log(err);

@@ -2,17 +2,16 @@ import { Router } from 'express';
 
 import { prisma } from '../..';
 import { ModifiedRequest } from '../../middlewares/types';
-import { AppSettings } from '@prisma/client';
+import { ColorsSetting } from '@prisma/client';
 import { getOrCreateInitialSettings } from '../../services/browser-extension/getOrCreateInitialSettings';
 
 const appSetting = Router();
 
-appSetting.put('/app-settings', async (req: ModifiedRequest, res) => {
+appSetting.put('/colors-settings', async (req: ModifiedRequest, res) => {
 
-    const { setting }: { setting: AppSettings } = req.body;
+    const { setting }: { setting: ColorsSetting } = req.body;
     const userId = req.userId;
 
-    console.log('appSettings', userId);
 
     try {
         const extensionSettings = await getOrCreateInitialSettings(userId!);
@@ -25,21 +24,16 @@ appSetting.put('/app-settings', async (req: ModifiedRequest, res) => {
         }
 
         if (setting) {
-            const updatedSettings = await prisma.appSettings.update({
+            const updatedSettings = await prisma.colorsSetting.update({
                 where: {
                     userId
                 },
-                data: {
-                    activeTime: setting.activeTime!,
-                    language: setting.language,
-                    theme: setting.theme,
-                    paused: setting.paused,
-                }
+                data: setting
             });
             return res.status(200).json(updatedSettings)
         }
 
-        return res.status(200).json(extensionSettings.app);
+        return res.status(200).json(extensionSettings.colors);
 
 
     } catch (error) {
@@ -51,7 +45,7 @@ appSetting.put('/app-settings', async (req: ModifiedRequest, res) => {
 
 });
 
-appSetting.get('/app-settings', async (req: ModifiedRequest, res) => {
+appSetting.get('/colors-settings', async (req: ModifiedRequest, res) => {
 
     const userId = req.userId;
 
@@ -65,7 +59,7 @@ appSetting.get('/app-settings', async (req: ModifiedRequest, res) => {
             });
         }
 
-        return res.status(200).json(extensionSettings.app);
+        return res.status(200).json(extensionSettings.colors);
 
     } catch (error) {
         res.status(500).json({

@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import appSettingRoute from './app-setting.route';
+import appSetting from './app-setting.route';
+import breakSetting from './break-setting.route';
 
 const browserExtention = Router();
 
-browserExtention.use(appSettingRoute)
+browserExtention.use(appSetting)
+browserExtention.use(breakSetting)
 
 export default browserExtention;
