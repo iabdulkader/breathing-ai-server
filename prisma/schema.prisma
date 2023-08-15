@@ -160,3 +160,59 @@ model UserColors {
   userId String   @unique
   colors String[]
 }
+
+model UserDevices {
+  id     String                @id @default(uuid())
+  userId String
+  type   String
+  name   String
+  auth   DeviceAuthentication?
+
+  @@unique([userId, type])
+}
+
+model DeviceAuthentication {
+  id           String @id @default(uuid())
+  deviceId     String
+  token        String
+  refreshToken String
+
+  userDevice   UserDevices @relation(fields: [userDeviceId], references: [id])
+  userDeviceId String      @unique
+}
+
+model UserIdentity {
+  id          String @id @default(uuid())
+  userId      String @unique
+  provider    String
+  profile     Json?
+  credentials Json?
+  authScheme  String
+}
+
+model userToken {
+  id      String @id @default(uuid())
+  userId  String @unique
+  token   String
+  purpose String
+}
+
+model UserVitals {
+  id         String       @id @default(uuid())
+  userId     String       @unique
+  age        Int
+  weight     Int
+  height     Int
+  gender     String
+  vitalSigns VitalSigns[]
+}
+
+model VitalSigns {
+  id   String @id @default(uuid())
+  data Json?
+
+  deviceId String
+
+  userVitals   UserVitals @relation(fields: [userVitalsId], references: [id])
+  userVitalsId String     @unique
+}

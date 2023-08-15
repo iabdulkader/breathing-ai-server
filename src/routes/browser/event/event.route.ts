@@ -62,6 +62,4 @@ eventRouter.post('/browser-extension/event/break', async (req: ModifiedRequest, 
 })
 
 
-
-
 export default eventRouter;
