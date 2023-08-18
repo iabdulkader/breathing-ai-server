@@ -34,6 +34,8 @@ bookmarkRoute.put('/user/bookmarks', async (req: ModifiedRequest, res) => {
 
     const contentId = bookmarks[0]
 
+    console.log(bookmarks)
+
     try {
         const bookmarked = await prisma.bookmarks.upsert({
             where: {
@@ -55,6 +57,7 @@ bookmarkRoute.put('/user/bookmarks', async (req: ModifiedRequest, res) => {
         });
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             success: false,
             message: (error as Error).message

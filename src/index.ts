@@ -18,6 +18,7 @@ import browserExtention from "./routes/browser";
 import screentimeRouter from "./routes/browser/screentime/screentime.route";
 import eventRouter from "./routes/browser/event/event.route";
 import colorsApi from "./routes/browser/color/colors.route";
+import authRouter from "./routes/auth.route";
 
 
 export const app: Express = express();
@@ -40,6 +41,7 @@ app.use("/explorer", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(signUpRouter);
 app.use(signInRouter);
+app.use("/auth", authRouter)
 
 app.use(authGuard);
 

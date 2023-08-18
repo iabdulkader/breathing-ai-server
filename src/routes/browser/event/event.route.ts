@@ -13,7 +13,6 @@ export const getCurrentDate = () => {
 eventRouter.post('/browser-extension/event/break', async (req: ModifiedRequest, res) => {
 
     const userId = req.userId;
-    console.log("asjd", req.body);
     const event: {
         contentUrl: string;
         completed: boolean;
@@ -46,6 +45,7 @@ eventRouter.post('/browser-extension/event/break', async (req: ModifiedRequest, 
                 completed: event.completed,
                 device: 'browser_extension',
                 rating: event.rating,
+
             }
         });
 

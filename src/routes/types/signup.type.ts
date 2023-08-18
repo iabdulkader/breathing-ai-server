@@ -4,6 +4,7 @@ export interface AccountDetails {
     email: string,
     password: string,
     jobTitle?: string
+    name?: string
 }
 
 export interface CompanyDetails {
